@@ -1,0 +1,10 @@
+IpInfo
+-
+Id PK int
+IpAddress varchar(16) INDEX
+SendGrantId int FK -0< SendGrant.Id
+
+SendGrant
+-
+Id PK int
+Name varchar(10)
