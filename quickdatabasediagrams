@@ -2,9 +2,10 @@ IpInfo
 -
 Id PK int Identity
 IpAddress varchar(16) INDEX
-SendGrantId int FK >0- SendGrant.Id
 
-SendGrant
+
+GrantSend
 -
 Id PK int Identity
+IpInfoId int FK >0- IpInfo.Id
 Name varchar(10)
