@@ -40,32 +40,35 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var s = (from g in Conn.GrantSends
-                     from i in Conn.IpInfo
-                     join m in Conn.MNInfoGrantSends
-                         on new { g.GrantSendId, i.IpInfoId }
-                         equals new { m.GrantSendId, m.IpInfoId }
-                     select new
-                     {
-                         IpInfo = i,
-                         GrantSend = g,
-                     }).Distinct().AsEnumerable();
+            //var a = Conn.IpInfo.LoadWith(x => x.MNInfoGrantSendIpInfoIds)
+                               
 
-            var q = from r in s
-                    group r by r.IpInfo.IpInfoId into l
-                    select new
-                    {
-                        IdInfoId = l.Key,
-                        IpAddress = l.Select(x => x.IpInfo.IpAddress).First(),
-                        GrantNames = from b in l
-                                     select new
-                                     {
-                                         b.GrantSend.GrantSendId,
-                                         b.GrantSend.Name
-                                     }
-                    };
+            //var s = (from g in Conn.GrantSends
+            //         from i in Conn.IpInfo
+            //         join m in Conn.MNInfoGrantSends
+            //             on new { g.GrantSendId, i.IpInfoId }
+            //             equals new { m.GrantSendId, m.IpInfoId }
+            //         select new
+            //         {
+            //             IpInfo = i,
+            //             GrantSend = g,
+            //         }).Distinct().AsEnumerable();
 
-            return Ok(q.ToArray());
+            //var q = from r in s
+            //        group r by r.IpInfo.IpInfoId into l
+            //        select new
+            //        {
+            //            IdInfoId = l.Key,
+            //            IpAddress = l.Select(x => x.IpInfo.IpAddress).First(),
+            //            GrantNames = from b in l
+            //                         select new
+            //                         {
+            //                             b.GrantSend.GrantSendId,
+            //                             b.GrantSend.Name
+            //                         }
+            //        };
+
+            return Ok(a.ToArray());
         }
     }
 }
