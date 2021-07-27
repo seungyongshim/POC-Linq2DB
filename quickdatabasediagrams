@@ -7,8 +7,8 @@ IpAddress varchar(16) INDEX
 MNInfoGrantSend
 -
 Id PK int Identity
-IpInfoId int FK -0< IpInfo.IpInfoId
-GrantSendId int FK -0< GrantSend.GrantSendId
+IpInfoId int FK >0- IpInfo.IpInfoId
+GrantSendId int FK >0- GrantSend.GrantSendId
 
 GrantSend
 -
