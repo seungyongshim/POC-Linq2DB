@@ -50,19 +50,22 @@ namespace WebApplication1.Controllers
                          IpInfo = i,
                          GrantSend = g,
                      }).Distinct().AsEnumerable();
-            var q = (from r in s
-                     group r by r.IpInfo.IpInfoId into l
-                     select new
+
+            var q = from r in s
+                    group r by r.IpInfo.IpInfoId into l
+                    select new
                     {
-                        Id = l.Key,
+                        IdInfoId = l.Key,
                         IpAddress = l.Select(x => x.IpInfo.IpAddress).First(),
                         GrantNames = from b in l
-                                     select b.GrantSend
-                    });
-                     
+                                     select new
+                                     {
+                                         b.GrantSend.GrantSendId,
+                                         b.GrantSend.Name
+                                     }
+                    };
 
             return Ok(q.ToArray());
         }
-
     }
 }
