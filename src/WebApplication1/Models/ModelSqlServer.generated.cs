@@ -8,7 +8,6 @@
 #pragma warning disable 1591
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using LinqToDB;
@@ -24,9 +23,7 @@ namespace DataModels
 	/// </summary>
 	public partial class AUMSDB : LinqToDB.Data.DataConnection
 	{
-		public ITable<GrantSend>       GrantSends       { get { return this.GetTable<GrantSend>(); } }
-		public ITable<IpInfo>          IpInfo           { get { return this.GetTable<IpInfo>(); } }
-		public ITable<MNInfoGrantSend> MNInfoGrantSends { get { return this.GetTable<MNInfoGrantSend>(); } }
+		public ITable<IpInfo> IpInfo { get { return this.GetTable<IpInfo>(); } }
 
 		public AUMSDB()
 		{
@@ -59,88 +56,20 @@ namespace DataModels
 		partial void InitMappingSchema();
 	}
 
-	[Table(Schema="dbo", Name="GrantSend")]
-	public partial class GrantSend
-	{
-		[PrimaryKey, Identity] public int    GrantSendId { get; set; } // int
-		[Column,     NotNull ] public string Name        { get; set; } // varchar(10)
-
-		#region Associations
-
-		/// <summary>
-		/// FK_MNInfoGrantSend_GrantSendId_BackReference
-		/// </summary>
-		[Association(ThisKey="GrantSendId", OtherKey="GrantSendId", CanBeNull=true, Relationship=LinqToDB.Mapping.Relationship.OneToMany, IsBackReference=true)]
-		public IEnumerable<MNInfoGrantSend> MNInfoGrantSendGrantSendIds { get; set; }
-
-		#endregion
-	}
-
 	[Table(Schema="dbo", Name="IpInfo")]
 	public partial class IpInfo
 	{
 		[PrimaryKey, Identity] public int    IpInfoId  { get; set; } // int
 		[Column,     NotNull ] public string IpAddress { get; set; } // varchar(16)
-
-		#region Associations
-
-		/// <summary>
-		/// FK_MNInfoGrantSend_IpInfoId_BackReference
-		/// </summary>
-		[Association(ThisKey="IpInfoId", OtherKey="IpInfoId", CanBeNull=true, Relationship=LinqToDB.Mapping.Relationship.OneToMany, IsBackReference=true)]
-		public IEnumerable<MNInfoGrantSend> MNInfoGrantSendIpInfoIds { get; set; }
-
-		#endregion
-	}
-
-    public partial class IpInfo
-    {
-        public override int GetHashCode() => this.IpInfoId;
-    }
-
-
-    [Table(Schema="dbo", Name="MNInfoGrantSend")]
-	public partial class MNInfoGrantSend
-	{
-		[PrimaryKey, Identity] public int Id          { get; set; } // int
-		[Column,     NotNull ] public int IpInfoId    { get; set; } // int
-		[Column,     NotNull ] public int GrantSendId { get; set; } // int
-
-		#region Associations
-
-		/// <summary>
-		/// FK_MNInfoGrantSend_GrantSendId
-		/// </summary>
-		[Association(ThisKey="GrantSendId", OtherKey="GrantSendId", CanBeNull=false, Relationship=LinqToDB.Mapping.Relationship.ManyToOne, KeyName="FK_MNInfoGrantSend_GrantSendId", BackReferenceName="MNInfoGrantSendGrantSendIds")]
-		public GrantSend GrantSend { get; set; }
-
-		/// <summary>
-		/// FK_MNInfoGrantSend_IpInfoId
-		/// </summary>
-		[Association(ThisKey="IpInfoId", OtherKey="IpInfoId", CanBeNull=false, Relationship=LinqToDB.Mapping.Relationship.ManyToOne, KeyName="FK_MNInfoGrantSend_IpInfoId", BackReferenceName="MNInfoGrantSendIpInfoIds")]
-		public IpInfo IpInfo { get; set; }
-
-		#endregion
+		[Column,     NotNull ] public short  GrantSend { get; set; } // smallint
 	}
 
 	public static partial class TableExtensions
 	{
-		public static GrantSend Find(this ITable<GrantSend> table, int GrantSendId)
-		{
-			return table.FirstOrDefault(t =>
-				t.GrantSendId == GrantSendId);
-		}
-
 		public static IpInfo Find(this ITable<IpInfo> table, int IpInfoId)
 		{
 			return table.FirstOrDefault(t =>
 				t.IpInfoId == IpInfoId);
-		}
-
-		public static MNInfoGrantSend Find(this ITable<MNInfoGrantSend> table, int Id)
-		{
-			return table.FirstOrDefault(t =>
-				t.Id == Id);
 		}
 	}
 }

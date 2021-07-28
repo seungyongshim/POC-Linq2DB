@@ -1,4 +1,6 @@
 using DataModels;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using LinqToDB.AspNet;
 using LinqToDB.AspNet.Logging;
 using LinqToDB.Configuration;
@@ -35,6 +37,9 @@ namespace WebApplication1
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApplication1", Version = "v1" });
             });
+
+            services.AddFluentValidation();
+            services.AddTransient<IValidator<IpInfoDto>, IpInfoDtoValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

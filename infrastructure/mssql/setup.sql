@@ -4,49 +4,17 @@ GO
 
 Use AUMS;
 
-
 CREATE TABLE [IpInfo] (
     [IpInfoId] int IDENTITY(1,1) NOT NULL ,
     [IpAddress] varchar(16)  NOT NULL ,
+    [GrantSend] smallint NOT NULL ,
     CONSTRAINT [PK_IpInfo] PRIMARY KEY CLUSTERED (
         [IpInfoId] ASC
     )
 )
 
-CREATE TABLE [MNInfoGrantSend] (
-    [Id] int IDENTITY(1,1) NOT NULL ,
-    [IpInfoId] int  NOT NULL ,
-    [GrantSendId] int  NOT NULL ,
-    CONSTRAINT [PK_MNInfoGrantSend] PRIMARY KEY CLUSTERED (
-        [Id] ASC
-    )
-)
-
-CREATE TABLE [GrantSend] (
-    [GrantSendId] int IDENTITY(1,1) NOT NULL ,
-    [Name] varchar(10)  NOT NULL ,
-    CONSTRAINT [PK_GrantSend] PRIMARY KEY CLUSTERED (
-        [GrantSendId] ASC
-    )
-)
-
-ALTER TABLE [MNInfoGrantSend] WITH CHECK ADD CONSTRAINT [FK_MNInfoGrantSend_IpInfoId] FOREIGN KEY([IpInfoId])
-REFERENCES [IpInfo] ([IpInfoId])
-
-ALTER TABLE [MNInfoGrantSend] CHECK CONSTRAINT [FK_MNInfoGrantSend_IpInfoId]
-
-ALTER TABLE [MNInfoGrantSend] WITH CHECK ADD CONSTRAINT [FK_MNInfoGrantSend_GrantSendId] FOREIGN KEY([GrantSendId])
-REFERENCES [GrantSend] ([GrantSendId])
-
-ALTER TABLE [MNInfoGrantSend] CHECK CONSTRAINT [FK_MNInfoGrantSend_GrantSendId]
-
-CREATE INDEX [idx_IpInfo_IpAddress]
+CREATE UNIQUE INDEX [idx_IpInfo_IpAddress]
 ON [IpInfo] ([IpAddress])
-
-GO
-
-INSERT INTO [GrantSend] ([Name]) VALUES ("Mail")
-INSERT INTO [GrantSend] ([Name]) VALUES ("SMS")
 
 GO
 
