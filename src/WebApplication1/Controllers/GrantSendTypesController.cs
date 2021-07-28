@@ -23,15 +23,18 @@ namespace WebApplication1.Controllers
 
             IEnumerable<int> Combination(IEnumerable<int> s)
             {
-                if (s.Count() > 0)
+                if (!s.Any())
                 {
-                    yield return s.Sum();
-                    foreach (var item in s)
+                    yield break;
+                }
+
+                yield return s.Sum();
+
+                foreach (var item in s)
+                {
+                    foreach (var x in Combination(s.Except(new[] { item })))
                     {
-                        foreach (var x in Combination(s.Except(new[] { item })))
-                        {
-                            yield return x;
-                        }
+                        yield return x;
                     }
                 }
             }
