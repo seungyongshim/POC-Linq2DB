@@ -19,31 +19,17 @@ namespace WebApplication1.Controllers
                     let a = (int)x
                     select a;
 
-            //var r = new IndexResult(a, Enum.GetName(typeof(GrantSendTypes), a));
 
-            IEnumerable<int> Combination(IEnumerable<int> s)
-            {
-                if (!s.Any())
-                {
-                    yield break;
-                }
+            
 
-                yield return s.Sum();
-
-                foreach (var item in s)
-                {
-                    foreach (var x in Combination(s.Except(new[] { item })))
-                    {
-                        yield return x;
-                    }
-                }
-            }
-
-            return Combination(q).Append(0)
+            return q.DifferentCombinations(3).SelectMany(x => x)
+                    .Append(0)
                                  .OrderBy(x => x)
                                  .Distinct()
                                  .Select(x => (GrantSendTypes)x)
                                  .Select(x => new IndexResult(x, x.ToString()));
         }
+
+       
     }
 }
