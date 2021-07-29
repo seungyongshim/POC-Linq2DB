@@ -8,6 +8,7 @@
 #pragma warning disable 1591
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using LinqToDB;
@@ -23,7 +24,8 @@ namespace DataModels
 	/// </summary>
 	public partial class AUMSDB : LinqToDB.Data.DataConnection
 	{
-		public ITable<IpInfo> IpInfo { get { return this.GetTable<IpInfo>(); } }
+		public ITable<IpInfo>   IpInfos   { get { return this.GetTable<IpInfo>(); } }
+		public ITable<UserInfo> UserInfos { get { return this.GetTable<UserInfo>(); } }
 
 		public AUMSDB()
 		{
@@ -56,12 +58,43 @@ namespace DataModels
 		partial void InitMappingSchema();
 	}
 
-	[Table(Schema="dbo", Name="IpInfo")]
+	[Table(Schema="dbo", Name="IpInfos")]
 	public partial class IpInfo
 	{
-		[PrimaryKey, Identity] public int    IpInfoId  { get; set; } // int
-		[Column,     NotNull ] public string IpAddress { get; set; } // varchar(16)
-		[Column,     NotNull ] public short  GrantSend { get; set; } // smallint
+		[PrimaryKey, Identity] public int    IpInfoId     { get; set; } // int
+		[Column,     Nullable] public string IpAddress    { get; set; } // varchar(16)
+		[Column,     Nullable] public short? GrantSend    { get; set; } // smallint
+		[Column,     Nullable] public int?   UserInfoId   { get; set; } // int
+		[Column,     Nullable] public bool?  PermissionYN { get; set; } // bit
+		[Column,     Nullable] public bool?  UseYN        { get; set; } // bit
+
+		#region Associations
+
+		/// <summary>
+		/// FK_IpInfos_UserInfoId_UserInfos_UserInfoId
+		/// </summary>
+		[Association(ThisKey="UserInfoId", OtherKey="UserInfoId", CanBeNull=true, Relationship=LinqToDB.Mapping.Relationship.ManyToOne, KeyName="FK_IpInfos_UserInfoId_UserInfos_UserInfoId", BackReferenceName="IpInfosUserInfoIdUserInfoIds")]
+		public UserInfo UserInfo { get; set; }
+
+		#endregion
+	}
+
+	[Table(Schema="dbo", Name="UserInfos")]
+	public partial class UserInfo
+	{
+		[PrimaryKey, Identity] public int    UserInfoId { get; set; } // int
+		[Column,     Nullable] public string EmpNo      { get; set; } // char(5)
+		[Column,     Nullable] public string CmpCode    { get; set; } // char(2)
+
+		#region Associations
+
+		/// <summary>
+		/// FK_IpInfos_UserInfoId_UserInfos_UserInfoId_BackReference
+		/// </summary>
+		[Association(ThisKey="UserInfoId", OtherKey="UserInfoId", CanBeNull=true, Relationship=LinqToDB.Mapping.Relationship.OneToMany, IsBackReference=true)]
+		public IEnumerable<IpInfo> IpInfosUserInfoIdUserInfoIds { get; set; }
+
+		#endregion
 	}
 
 	public static partial class TableExtensions
@@ -70,6 +103,12 @@ namespace DataModels
 		{
 			return table.FirstOrDefault(t =>
 				t.IpInfoId == IpInfoId);
+		}
+
+		public static UserInfo Find(this ITable<UserInfo> table, int UserInfoId)
+		{
+			return table.FirstOrDefault(t =>
+				t.UserInfoId == UserInfoId);
 		}
 	}
 }

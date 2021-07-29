@@ -8,31 +8,32 @@ namespace WebApplication1.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    public class IpInfoController : ControllerBase, IDisposable
+    public class IpInfosController : ControllerBase, IDisposable
     {
         private bool disposedValue;
 
-        public IpInfoController(AUMSDB conn,
-                                ILogger<IpInfoController> logger)
+        public IpInfosController(AUMSDB conn,
+                                 ILogger<IpInfosController> logger)
         {
-            this.Conn = conn;
-            this.Logger = logger;
+            Conn = conn;
+            Logger = logger;
 
             Logger.LogInformation("Create IpInfoController");
         }
 
         public AUMSDB Conn { get; }
-        public ILogger<IpInfoController> Logger { get; }
+        public ILogger<IpInfosController> Logger { get; }
 
         [HttpPut]
         public async Task<int> Create(IpInfoDto ipInfoDto)
         {
-            var id = await this.Conn.InsertWithInt32IdentityAsync(new IpInfo
+            var id = await Conn.InsertWithInt32IdentityAsync(new IpInfo
             {
                 IpAddress = ipInfoDto.IpAddress,
-                GrantSend = (short)ipInfoDto.GrantSendType
+                GrantSend = (short)ipInfoDto.GrantSendType,
+                UserInfoId = ipInfoDto.UserInfoId,
             });
 
             return id;
@@ -41,7 +42,7 @@ namespace WebApplication1.Controllers
         [HttpGet("{grantSend}")]
         public async Task<IActionResult> GetAll(short grantSend)
         {
-            var q = from i in Conn.IpInfo
+            var q = from i in Conn.IpInfos
                     where grantSend != 0
                     where (i.GrantSend & grantSend) == grantSend
                     select new
@@ -57,13 +58,16 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var q = from i in Conn.IpInfo
+            var q = from i in Conn.IpInfos
+                    join u in Conn.UserInfos on i.UserInfoId equals u.UserInfoId
                     select new
                     {
                         i.IpInfoId,
                         i.IpAddress,
                         i.GrantSend,
-                        GrantSendTypes = ((GrantSendTypes)i.GrantSend).ToString()
+                        GrantSendTypes = ((GrantSendTypes)i.GrantSend).ToString(),
+                        u.EmpNo,
+                        u.CmpCode
                     };
 
             return Ok(await q.ToListAsync());
