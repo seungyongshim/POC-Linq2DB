@@ -8,7 +8,7 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.0" />
     <PackageReference Include="linq2db" Version="3.4.2" />
     <PackageReference Include="linq2db.AspNet" Version="3.4.2" />
-    <PackageReference Include="linq2db.SqlServer" Version="3.4.2" />
+    <PackageReference Include="linq2db.SqlServer" Version="4.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     <PackageReference Include="System.Interactive" Version="5.0.0" />
